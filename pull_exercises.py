@@ -14,7 +14,7 @@ import json
 import time
 
 # ===== API-Ninjas Setup =====
-api_ninjas_key = 'JUQZNe1cWZOx//Za33Y4Vw==8HKjd8kaR6LwQsGW'  # 🔵 Replace this with your actual API key
+api_ninjas_key = 'JUQZNe1cWZOx//Za33Y4Vw==8HKjd8kaR6LwQsGW'  
 headers = {'X-Api-Key': api_ninjas_key}
 
 # ===== Initialize storage =====
@@ -76,7 +76,7 @@ for muscle in flexibility_muscles:
     else:
         print(f"Error pulling flexibility exercises for {muscle}: {response_flex.status_code}")
 
-# ===== Deduplicate Exercises by Name =====
+# ===== Deduplicate Exercises by Name so Exercises are not repeated =====
 def deduplicate_by_name(exercise_list):
     seen = set()
     unique = []
@@ -114,5 +114,5 @@ total_strength = sum(len(exs) for exs in strength_exercises.values())
 print(f"Saved {total_strength} unique strength exercises (grouped by muscle).")
 print(f"Saved {len(cardio_exercises)} unique cardio exercises.")
 print(f"Saved {len(flexibility_exercises)} unique flexibility exercises.")
-print("All exercises saved to all_exercises.json ✅")
+print("All exercises saved to all_exercises.json")
 
