@@ -1,6 +1,8 @@
 import gradio as gr
 
 def generate_workout(goal, level, equipment, days_per_week):
+
+    'the function takes user input and returns a simple workout message'
  
     return f"Generated workout for {goal}, {level} level, {days_per_week} days a week."
 
