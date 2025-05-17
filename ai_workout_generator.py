@@ -1,12 +1,17 @@
-
+import gradio as gr
 import openai
 import json
 import random
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
 
 with open('all_exercises.json', 'r') as f:
     exercise_list = json.load(f)
 
-openai.api_key = "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"
 
 def generate_workout(goal, level, equipment, days):
     sample = random.sample(exercise_list, min(10, len(exercise_list)))
