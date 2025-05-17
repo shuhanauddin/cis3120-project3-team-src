@@ -9,16 +9,42 @@ Original file is located at
 
 !pip install requests
 
+!pip install python-dotenv
+
+from google.colab import files
+uploaded = files.upload()  #Select my .env
+
+#I did this because the .env would not upload properly
+with open(".env", "w") as f:
+    f.write("API_KEY=JUQZNe1cWZOx//Za33Y4Vw==8HKjd8kaR6LwQsGW")
+
+from dotenv import load_dotenv
+import os
+
+load_dotenv()  # Load from .env file
+
+# Load the key
+api_key = os.getenv("API_KEY")
+headers = {"X-Api-Key": api_key}
+
+# Print to check that it works
+print("Loaded key:", api_key)
+
+!pip install python-dotenv
+
+from dotenv import load_dotenv
+import os
 import requests
 import json
-import time
 
-# ===== API-Ninjas Setup =====
-api_ninjas_key = 'JUQZNe1cWZOx//Za33Y4Vw==8HKjd8kaR6LwQsGW'  
-headers = {'X-Api-Key': api_ninjas_key}
+load_dotenv()
 
-# ===== Initialize storage =====
-strength_exercises = {}   # strength by muscle
+# API Setup
+api_ninjas_key = os.getenv("API_KEY")
+headers = {'X-Api-Key': api_key}
+
+
+strength_exercises = {}
 cardio_exercises = []
 flexibility_exercises = []
 
@@ -28,7 +54,7 @@ flexibility_muscles = ['abdominals', 'lower_back', 'neck', 'calves', 'hamstrings
 # Flexibility keywords
 flexibility_keywords = ['stretch', 'plank']
 
-# ===== Pull Strength Exercises =====
+# Pull strength exercises
 url_strength = 'https://api.api-ninjas.com/v1/exercises?type=strength&limit=100'
 response_strength = requests.get(url_strength, headers=headers)
 
@@ -47,7 +73,7 @@ if response_strength.status_code == 200:
 else:
     print(f"Error pulling strength exercises: {response_strength.status_code}")
 
-# ===== Pull Cardio Exercises =====
+# Pull cardio exercises
 url_cardio = 'https://api.api-ninjas.com/v1/exercises?type=cardio&limit=100'
 response_cardio = requests.get(url_cardio, headers=headers)
 
@@ -57,7 +83,7 @@ if response_cardio.status_code == 200:
 else:
     print(f"Error pulling cardio exercises: {response_cardio.status_code}")
 
-# ===== Pull Additional Flexibility Exercises (by flexibility muscles) =====
+# Pull more flexibility exercises
 for muscle in flexibility_muscles:
     url_flex = f'https://api.api-ninjas.com/v1/exercises?muscle={muscle}&limit=100'
     response_flex = requests.get(url_flex, headers=headers)
@@ -76,7 +102,7 @@ for muscle in flexibility_muscles:
     else:
         print(f"Error pulling flexibility exercises for {muscle}: {response_flex.status_code}")
 
-# ===== Deduplicate Exercises by Name so Exercises are not repeated =====
+# Help with deplication problen
 def deduplicate_by_name(exercise_list):
     seen = set()
     unique = []
@@ -94,12 +120,11 @@ def deduplicate_strength_dict(strength_dict):
         deduped[muscle] = deduplicate_by_name(exercises)
     return deduped
 
-# Apply deduplication
 strength_exercises = deduplicate_strength_dict(strength_exercises)
 cardio_exercises = deduplicate_by_name(cardio_exercises)
 flexibility_exercises = deduplicate_by_name(flexibility_exercises)
 
-# ===== Save to JSON =====
+# Save to JSON
 all_exercises = {
     "strength": strength_exercises,
     "cardio": cardio_exercises,
@@ -111,8 +136,7 @@ with open('all_exercises.json', 'w') as f:
 
 # ===== Final Summary =====
 total_strength = sum(len(exs) for exs in strength_exercises.values())
-print(f"Saved {total_strength} unique strength exercises (grouped by muscle).")
-print(f"Saved {len(cardio_exercises)} unique cardio exercises.")
-print(f"Saved {len(flexibility_exercises)} unique flexibility exercises.")
+print(f"Saved {total_strength} unique strength exercises (by muscle)")
+print(f"Saved {len(cardio_exercises)} unique cardio exercises")
+print(f"Saved {len(flexibility_exercises)} unique flexibility exercises")
 print("All exercises saved to all_exercises.json")
-
